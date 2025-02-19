@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blobs in {{ container_name }}</title>
+</head>
+<body>
+    <h1>Blobs in Container: {{ container_name }}</h1>
+
+    <form action="{{ url_for('delete_blobs', container_name=container_name) }}" method="post">
+        <h2>Files</h2>
+        <ul>
+            {% for file in files %}
+                <li>
+                    <input type="checkbox" name="blob_names" value="{{ file }}">
+                    <label for="{{ file }}">{{ file }}</label>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Folders</h2>
+        <ul>
+            {% for folder in folders %}
+                <li>
+                    <!-- <input type="checkbox" name="blob_names" value="{{ current_folder + folder + '/' }}"> -->
+                    <input type="checkbox" name="blob_names" value="checkbox">
+                    <label for="{{ current_folder + folder + '/' }}">{{ folder }}</label>
+                </li>
+            {% endfor %}
+        </ul>
+
+    <!-- <input type="submit" value="Delete Selected"> -->
+</form>
+<input type="submit" value="Delete Selected">
+
+
+
+<a href="{{ url_for('list_containers') }}">Back to Containers</a>
+</body>
+</html>

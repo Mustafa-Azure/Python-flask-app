@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Storage Containers</title>
+</head>
+<body>
+    <h1>List of Azure Storage Containers</h1>
+    <ul>
+        {% for container in containers %}
+            <li><a href="{{ url_for('list_blobs', container_name=container) }}">{{ container }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

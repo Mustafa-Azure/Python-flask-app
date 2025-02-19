@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Storage Containers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background-color: white; /* Ensure background is white */
+            z-index: 10; /* Ensure it stays above other content */
+            padding: 10px 0; /* Add some padding */
+        }
+        .links a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+        .search-box input[type="text"] {
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .table-container {
+            max-height: 400px; /* Set a max height for the table container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            border: 1px solid #ddd; /* Optional: Add border around the table */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Fix the layout to prevent resizing */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0; /* Stick the table header to the top */
+            z-index: 5; /* Ensure it stays above table rows */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Zebra striping for better readability */
+        }
+        footer {
+            background-color: #f2f2f2;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        footer img {
+            height: 40px; /* Adjust logo height */
+            margin-right: 10px; /* Space between logo and text */
+        }
+        footer p {
+            margin: 0; /* Remove default margin */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Azure Storage Containers</h1>
+    </header>
+    <div class="header">
+        <div class="links">
+            <a href="#link1">Link 1</a>
+            <a href="#link2">Link 2</a>
+            <a href="#link3">Link 3</a>
+        </div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search containers..." />
+        </div>
+    </div>
+    <div class="table-container">
+        <table id="containersTable">
+            <thead>
+                <tr>
+                    <th>Container Name</th>
+                    <th>Last Modified</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>container1</td>
+                    <td>2023-10-01T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container2</td>
+                    <td>2023-10-02T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container3</td>
+                    <td>2023-10-03T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container4</td>
+                    <td>2023-10-04T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container5</td>
+                    <td>2023-10-05T12:00:00Z</td>
+ </tr>
+                <tr>
+                    <td>container6</td>
+                    <td>2023-10-06T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container7</td>
+                    <td>2023-10-07T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container8</td>
+                    <td>2023-10-08T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container9</td>
+                    <td>2023-10-09T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container10</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container10</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container10</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container10</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>container10</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>PDF</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>event</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+                <tr>
+                    <td>box</td>
+                    <td>2023-10-10T12:00:00Z</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        <img src="logo-placeholder.png" alt="Logo" />
+        <p>&copy; 2023 Azure Storage. All rights reserved.</p>
+    </footer>
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const input = this.value.toLowerCase();
+            const table = document.getElementById('containersTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j].textContent.toLowerCase().includes(input)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = found ? '' : 'none';
+            }
+        });
+    </script>
+</body>
+</html>
