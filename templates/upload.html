@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blobs in {{ container_name }}</title>
+    <script>
+        function confirmUpload(event) {
+            const fileInput = document.querySelector('input[type="file"]');
+            const existingFiles = {{ request.args.get("existing_files", "[]") | tojson }}; // Get existing filenames from the URL
+            const files = fileInput.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const filename = files[i].name;
+                if (existingFiles.includes(filename)) {
+                    const confirmMessage = `A file named "${filename}" already exists. Do you want to overwrite it?`;
+                    const userConfirmed = confirm(confirmMessage);
+                    if (!userConfirmed) {
+                        event.preventDefault(); // Prevent the form from submitting
+                        return false; // Skip the upload
+                    }
+                }
+            }
+            return true; // Proceed with the upload
+        }
+    </script>
+</head>
+<body>
+    <h1>Blobs in Container: {{ container_name }}</h1>
+
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h2>Current Folder: {{ current_folder }}</h2>
+
+    <h2>Upload Files</h2>
+    <form action="{{ url_for('upload_blob', container_name=container_name, folder_path=current_folder) }}" method="post" enctype="multipart/form-data" onsubmit="return confirmUpload(event);">
+        <input type="file" name="files" multiple required> <!-- Allow multiple file uploads -->
+        <input type="submit" value="Upload">
+    </form>
+
+    <a href="{{ url_for('list_containers') }}">Back to Containers</a>
+</body>
+</html>
