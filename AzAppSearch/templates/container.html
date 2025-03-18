@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container: {{ container_name }}</title>
+    <script>
+        function searchBlobs() {
+            let query = document.getElementById("searchBox").value;
+            fetch(`/search/{{ container_name }}?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsList = document.getElementById("searchResults");
+                    resultsList.innerHTML = "";
+                    data.forEach(item => {
+                        let li = document.createElement("li");
+                        let link = document.createElement("a");
+
+                        if (item.type === "folder") {
+                            link.href = `/container/{{ container_name }}/${item.name}/`;
+                        } else {
+                            link.href = "#"; // Optionally change to a download link
+                        }
+
+                        link.textContent = item.name;
+                        li.appendChild(link);
+                        resultsList.appendChild(li);
+                    });
+                });
+        }
+    </script>
+</head>
+<body>
+    <h2>Container: {{ container_name }}</h2>
+    <a href="{{ url_for('home') }}">Back to Containers</a>
+
+    <!-- Search Bar -->
+    <input type="text" id="searchBox" onkeyup="searchBlobs()" placeholder="Search files or folders...">
+    <ul id="searchResults"></ul>
+
+    <h3>Directories</h3>
+    <ul>
+        {% for directory in directories %}
+            <li>
+                <a href="{{ url_for('view_container', container_name=container_name, prefix=prefix ~ directory) }}">
+                    {{ directory }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Files</h3>
+    <ul>
+        {% for file in files %}
+            <li>{{ file }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blobs in {{ container_name }}</title>
+</head>
+<body>
+    <h1>Blobs in Container: {{ container_name }}</h1>
+    
+    <form method="GET" action="{{ url_for('list_blobs', container_name=container_name, prefix=prefix) }}">
+        <input type="text" name="search" placeholder="Search blobs..." value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Folders</h2>
+    <ul>
+        {% for folder in folders %}
+            <li><a href="{{ url_for('list_blobs', container_name=container_name, prefix=folder) }}">{{ folder }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h2>Files</h2>
+    <ul>
+        {% for blob in blobs %}
+            <li>{{ blob }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Back to Containers</a>
+</body>
+</html>
