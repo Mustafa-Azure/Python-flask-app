@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Uploaded Products</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .product-card {
+      position: relative;
+    }
+    .checkbox-top-right {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      z-index: 10;
+    }
+    .product-info {
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body class="bg-light">
+<div class="container my-4">
+  <div class="row">
+    <!-- Sidebar: Upload Link and Filters -->
+    <aside class="col-lg-3 mb-4">
+      <div class="d-flex justify-content-start mb-3">
+        <a href="{{ url_for('upload') }}" class="btn btn-outline-success w-100">
+          &larr; Upload New Product
+        </a>
+      </div>
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0 text-center">Filter Products</h5>
+        </div>
+        <div class="card-body">
+          <form method="get" action="{{ url_for('products') }}">
+            <div class="mb-3">
+              <label for="name" class="form-label fw-bold">Name</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ filter_name }}" placeholder="Filter by name">
+            </div>
+            <div class="mb-3">
+              <label for="category" class="form-label fw-bold">Category</label>
+              <input type="text" class="form-control" id="category" name="category" value="{{ filter_category }}" placeholder="Filter by category">
+            </div>
+            <div class="mb-3">
+              <label for="type" class="form-label fw-bold">Type</label>
+              <input type="text" class="form-control" id="type" name="type" value="{{ filter_type }}" placeholder="Filter by type">
+            </div>
+            <label class="form-label fw-bold">Price Range</label>
+            <div class="row g-2 mb-3">
+              <div class="col">
+                <input type="number" step="0.01" min="0" class="form-control" id="price_min" name="price_min" value="{{ filter_price_min }}" placeholder="Min price">
+              </div>
+              <div class="col">
+                <input type="number" step="0.01" min="0" class="form-control" id="price_max" name="price_max" value="{{ filter_price_max }}" placeholder="Max price">
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success flex-fill">Apply Filters</button>
+              <button type="button" id="clear-filters-btn" class="btn btn-outline-secondary flex-fill">Clear Filters</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Products and Delete Form -->
+    <section class="col-lg-9">
+      <form method="post" action="{{ url_for('delete_products') }}" id="delete-form">
+        <div class="d-flex justify-content-end mb-3">
+          <button type="submit" class="btn btn-danger" id="delete-selected-btn" disabled
+                  onclick="return confirm('Are you sure you want to delete selected products?');">
+            Delete Selected
+          </button>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% if products and products|length > 0 %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+          {% for product in products %}
+          <div class="col">
+            <div class="card product-card shadow-sm">
+              <label class="checkbox-top-right">
+                <input type="checkbox" name="selected_products" 
+                       value="{{ product.category }}|{{ product.rowKey }}"
+                       class="form-check-input select-product-checkbox"
+                       onchange="toggleDeleteButton()">
+              </label>
+              <div class="card-body product-info">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text mb-1"><strong>Category:</strong> {{ product.category }}</p>
+                <p class="card-text mb-1"><strong>Type:</strong> {{ product.type }}</p>
+                <p class="card-text fw-bold text-success fs-5">${{ "%.2f"|format(product.price) }}</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+          <p class="text-center fs-5">No products matching the filter criteria.</p>
+        {% endif %}
+      </form>
+    </section>
+  </div>
+</div>
+
+<!-- Bootstrap 5 JS bundle (Popper + Bootstrap) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function toggleDeleteButton() {
+    const checkboxes = document.querySelectorAll('.select-product-checkbox');
+    const deleteButton = document.getElementById('delete-selected-btn');
+    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+    deleteButton.disabled = !anyChecked;
+  }
+  document.addEventListener('DOMContentLoaded', toggleDeleteButton);
+</script>
+<script>
+  document.getElementById('clear-filters-btn').addEventListener('click', function() {
+    window.location.href = "{{ url_for('products') }}";
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDF Document Explorer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .feature-button {
+      min-width: 160px;
+      margin: 0.5rem;
+      text-align: center;
+    }
+    .icon-section {
+      position: relative;
+    }
+    .icon-folder {
+      font-size: 6rem;
+      color: goldenrod;
+    }
+    .icon-pdf {
+      font-size: 2rem;
+      color: red;
+      position: absolute;
+    }
+    .icon-pdf:nth-child(2) { top: -10px; left: 50px; }
+    .icon-pdf:nth-child(3) { top: -20px; left: 90px; }
+    .icon-pdf:nth-child(4) { top: 10px; left: 110px; }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="text-muted">Welcome John Doe,</h5>
+      <a href="#" class="btn btn-outline-secondary">Sign in</a>
+    </div>
+
+    <h2><strong>Manage files with <span class="text-danger">PDF Document Explorer</span></strong></h2>
+    <p class="text-muted">This application is intended to work as a file explorer for managing files on the Azure Storage Account.</p>
+
+    <h4 class="mt-4">Features</h4>
+    <p class="text-muted">The application provides the following functionalities restricted by defined Roles:</p>
+
+    <div class="d-flex flex-wrap">
+      <a href="{{ url_for('products') }}"><button class="btn btn-success feature-button"><i class="fas fa-folder-open"></i><br>View content<br>of folders & files</button></a>
+      <button class="btn btn-warning feature-button"><i class="fas fa-folder-plus"></i><br>Create a new folder</button>
+      <button class="btn btn-primary feature-button" href="{{ url_for('upload_form') }}"><i class="fas fa-upload"></i><br>Upload file(s)</button>
+      <button class="btn btn-danger feature-button"><i class="fas fa-trash-alt"></i><br>Delete file(s)</button>
+    </div>
+
+    <div class="mt-4">
+      <a href="{{ url_for('products') }}"><button class="btn btn-dark">Proceed</button></a>
+    </div>
+
+    <p class="text-muted mt-3" style="font-size: 0.9rem;">
+      Please ensure you have necessary privileges to perform necessary actions using this application. Role based access is defined to grant access to different functionalities of the application.
+    </p>
+
+    <!-- Icons Section -->
+    <div class="icon-section mt-5 text-end">
+      <i class="fas fa-folder icon-folder"></i>
+      <i class="fas fa-file-pdf icon-pdf"></i>
+      <i class="fas fa-file-pdf icon-pdf"></i>
+      <i class="fas fa-file-pdf icon-pdf"></i>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Welcome to Product Store</title>
+    <style>
+        body {
+            background: #28a745;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.3em;
+            font-weight: 900;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        p {
+            font-size: 1.3em;
+            margin-bottom: 1.5em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 0 10px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #28a745;
+            background: white;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            transition: background 0.3s ease, color 0.3s ease;
+            user-select: none;
+        }
+        .btn:hover {
+            background: #1e7e34;
+            color: white;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        @media (max-width:600px) {
+            h1 {
+                font-size: 2.2em;
+            }
+            .btn {
+                display: block;
+                margin: 10px auto;
+                width: 70%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Product Store</h1>
+        <p>Manage and explore your product images and metadata with ease.</p>
+        <a class="btn" href="{{ url_for('products') }}">View Products</a>
+        <a class="btn" href="{{ url_for('upload_form') }}">Upload New Product</a>
+    </div>
+</body>
+</html>

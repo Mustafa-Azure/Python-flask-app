@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8" />
+   <title>Uploaded Products</title>
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f9fafb;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 30px;
+            min-height: 80vh;
+        }
+        /* Left sidebar for filters + upload link */
+        .sidebar {
+            flex: 0 0 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .upload-link {
+            align-self: flex-start;
+            margin-bottom: 10px;
+        }
+        .upload-link a {
+            font-weight: bold;
+            color: #28a745;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .upload-link a:hover {
+            text-decoration: underline;
+        }
+        .filters {
+            background: #e9f6ec;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: inset 0 0 10px #c3e6cb;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        .filters h2 {
+            margin-top: 0;
+            color: #28a745;
+            font-size: 22px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .filters label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+        .filters input[type=text],
+        .filters input[type=number] {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filters .price-range {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .filters .price-range input {
+            flex: 1 0 50%;
+        }
+        .filters button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .filters button:hover {
+            background-color: #218838;
+        }
+        /* Buttons container */
+        .filters .buttons-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .filters .buttons-container button {
+            flex: 1;
+        }
+        /* Product grid content */
+        .products-grid {
+            flex: 1 1 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.07);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            transition: box-shadow 0.3s ease;
+            min-height: 150px;
+        }
+        .product-card:hover {
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        .product-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin: 0 0 8px 0;
+            color: #222;
+        }
+        .product-meta {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .product-price {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 16px;
+            margin-top: auto;
+        }
+        /* Messages */
+        .messages {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            grid-column: 1 / -1;
+        }
+        .messages p {
+            margin: 0;
+        }
+        .messages.error {
+            background-color: #f8d7da;
+            color: #842029;
+            max-width: 600px;
+            margin: 10px auto;
+            font-weight: bold;
+        }
+        /* Responsive behavior */
+        @media (max-width: 880px) {
+            .container {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
+            .sidebar {
+                width: 100%;
+                position: relative;
+                top: auto;
+                margin-bottom: 25px;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+                gap: 18px;
+            }
+            .upload-link {
+                margin-bottom: 20px;
+            }
+        }
+   </style>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <div class="upload-link">
+            <a href="{{ url_for('home') }}">&larr; Upload New Product</a>
+        </div>
+        <aside class="filters">
+            <h2>Filter Products</h2>
+            <form method="get" action="{{ url_for('products') }}">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="{{ filter_name }}" placeholder="Filter by name">
+
+                <label for="category">Category</label>
+                <input type="text" id="category" name="category" value="{{ filter_category }}" placeholder="Filter by category">
+
+                <label for="type">Type</label>
+                <input type="text" id="type" name="type" value="{{ filter_type }}" placeholder="Filter by type">
+
+                <label>Price range</label>
+                <div class="price-range">
+                    <input type="number" step="0.01" min="0" id="price_min" name="price_min" value="{{ filter_price_min }}" placeholder="Min price">
+                    <input type="number" step="0.01" min="0" id="price_max" name="price_max" value="{{ filter_price_max }}" placeholder="Max price">
+                </div>
+
+                <div class="buttons-container">
+                    <button type="submit">Apply Filters</button>
+                    <button type="button" id="clear-filters-btn">Clear Filters</button>
+                </div>
+            </form>
+            <script>
+                document.getElementById('clear-filters-btn').addEventListener('click', function() {
+                    window.location.href = "{{ url_for('products') }}";
+                });
+            </script>
+        </aside>
+    </div>
+
+    <section class="products-grid">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="messages">
+              {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% if products %}
+            {% for product in products %}
+            <article class="product-card">
+                <h3 class="product-name">{{ product.name }}</h3>
+                <p class="product-meta">Category: {{ product.category }}</p>
+                <p class="product-meta">Type: {{ product.type }}</p>
+                <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
+            </article>
+            {% endfor %}
+        {% else %}
+            <p>No products matching the filter criteria.</p>
+        {% endif %}
+    </section>
+</div>
+</body>
+</html>
