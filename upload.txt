@@ -1,0 +1,47 @@
+from flask import Flask, request
+import pandas as pd
+from azure.data.tables import TableServiceClient
+import uuid
+import os
+
+app = Flask(__name__)
+
+# Configure your Azure Table Storage
+AZURE_CONN_STR = os.getenv("AZURE_STORAGE_CONN_STR")
+TABLE_NAME = "ExcelUpload"
+
+# Set up Table client
+service = TableServiceClient.from_connection_string(conn_str=AZURE_CONN_STR)
+table_client = service.create_table_if_not_exists(table_name=TABLE_NAME)
+
+
+@app.route("/upload-excel", methods=["POST"])
+def upload_excel():
+    if 'file' not in request.files:
+        return {"error": "No file uploaded"}, 400
+
+    file = request.files["file"]
+
+    try:
+        df = pd.read_excel(file)
+
+        for idx, row in df.iterrows():
+            entity = {
+                "PartitionKey": "ExcelData",
+                "RowKey": str(uuid.uuid4()),  # unique ID
+            }
+            for col in df.columns:
+                val = row[col]
+                if pd.notnull(val):
+                    entity[col] = str(val)
+
+            table_client.create_entity(entity=entity)
+
+        return {"message": "Excel data uploaded to Azure Table Storage successfully"}
+
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
