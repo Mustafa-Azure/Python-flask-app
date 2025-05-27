@@ -1,0 +1,40 @@
+@app.route("/api/project-info", methods=["POST"])
+def get_project_info():
+    data = request.get_json()
+    project_name = data.get("project_name")
+
+    if not project_name:
+        return jsonify({"error": "Project name is required"}), 400
+
+    try:
+        table_service = TableServiceClient.from_connection_string(conn_str=CONNECTION_STRING)
+        table_client = table_service.get_table_client(table_name=TABLE_NAME)
+        entity = table_client.get_entity(partition_key="ProjectMetadata", row_key=project_name)
+
+        return jsonify({
+            "region": entity.get("Region", ""),
+            "geo_location": entity.get("GeoLocation", "")
+        })
+    except Exception as e:
+        print(f"Error fetching metadata: {e}")
+        return jsonify({"error": "Could not fetch project metadata"}), 500
+
+
+
+const handleProjectSelect = async (event: any, value: string | null) => {
+    setProjectName(value);
+    setRegion('');
+    setGeoLocation('');
+
+    if (!value) return;
+
+    try {
+      const response = await axios.post('/api/project-info', {
+        project_name: value,
+      });
+      setRegion(response.data.region);
+      setGeoLocation(response.data.geo_location);
+    } catch (err) {
+      console.error('Failed to fetch project metadata', err);
+    }
+  };
